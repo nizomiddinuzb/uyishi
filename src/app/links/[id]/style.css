@@ -1,0 +1,21 @@
+*{
+    background-color: #323030;
+}
+
+.details__div{
+    width: 800px;
+    height: 1000px;
+    border: solid 2px white;
+    border-radius: 30px;
+    text-align: center;
+    margin: 0 auto;
+}
+h1{
+    color: rgb(231, 239, 128);
+}
+h2{
+    color: rgb(231, 239, 128);
+}
+h3{
+    color: rgb(231, 239, 128);
+}
