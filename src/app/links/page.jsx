@@ -1,6 +1,8 @@
 'use client'
+
 import './style.css'
-import Image from 'next/image';
+
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 
 async function getData() {
@@ -8,33 +10,53 @@ async function getData() {
     return res.json();
 }
 
-export default async function Links() {
-    const data = await getData();
+export default function Links() {
+    const [data, setData] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const products = await getData();
+            setData(products);
+        };
+        fetchData();
+    }, []);
+
+    const handleCategoryChange = (e) => {
+        setSelectedCategory(e.target.value);
+    };
+
+    const filteredData = selectedCategory
+        ? data.filter(product => product.category.toLowerCase().includes(selectedCategory.toLowerCase()))
+        : data;
+
     return (
-        <body>
+        <div>
             <header>
                 <nav>
+                    <select className='select__nav' onChange={handleCategoryChange}>
+                        <option value="">Hammas</option>
+                        <option value="women's clothing">Ayollar kiyimlari</option>
+                        <option value="men's clothing">Erkak kiyimlari</option>
+                        <option value="jewelery">Taqinchoqlar</option>
+                        <option value="electronics">Kompyuter Hotirasi</option>
+                    </select>
                     <ul className="nav__ul">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                    <image
-                        src="/logo.png"
-                        alt="logo"
-                        width="100"
-                        height="100"
-                    />
-                    <ul className='nav__ul'>
-                        <li><a href="#">Archive</a></li>
-                        <li><a href="#">Pro Version</a></li>
-                        <li><a href="#">Download</a></li>
-                    </ul>
+                         <li><a href="#">Home</a></li>
+                         <li><a href="#">About</a></li>
+                         <li><a href="#">Contact</a></li>
+                     </ul>
+                     <ul className='nav__ul'>
+                         <li><a href="#">Archive</a></li>
+                         <li><a href="#">Pro Version</a></li>
+                         <li><a href="#">Download</a></li>
+                     </ul>
+                    {/* Your other navigation elements */}
                 </nav>
             </header>
             <main>
                 <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', justifyContent: 'center' }}>
-                    {data.map(product => (
+                    {filteredData.map(product => (
                         <div className="api__div" key={product.id} style={{ textAlign: 'center' }}>
                             <img className="product__image" src={product.image} alt={product.title} style={{ width: '200px', height: '200px', marginBottom: '10px' }} />
                             <Link className='asosiy__link' href={`/links/${product.id}`}>{product.title}</Link>
@@ -42,6 +64,6 @@ export default async function Links() {
                     ))}
                 </section>
             </main>
-        </body>
+        </div>
     );
 }
